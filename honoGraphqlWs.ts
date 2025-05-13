@@ -4,6 +4,10 @@ import type { Context, Env, Input } from 'hono';
 import { createMiddleware } from 'hono/factory';
 import type { UpgradeWebSocket, WSContext } from "hono/ws";
 
+/**
+ * The WeakKey type is used to define the key of the WebSocket.
+ * This is used to store the WebSocket in a WeakMap.
+ */
 interface MakeHonoHooksOptions<T = unknown> {
     /**
      * If true, the server will be in production mode. This will disable some debugging features.
@@ -15,7 +19,9 @@ interface MakeHonoHooksOptions<T = unknown> {
     upgradeWebSocket: UpgradeWebSocket<T>
 }
 
-
+/**
+ * The Client interface is used to define the methods that a client must implement.
+ */
 interface Client {
     /**
      * Clients may send messages through the socket. This function can be called to handle those incoming messages.
@@ -27,6 +33,10 @@ interface Client {
     signalClosure: (code: number, reason: string) => Promise<void>;
 }
 
+/**
+ * The Extra interface is used to define the extra properties that are passed to the server.
+ * This is used to pass the Hono context to the server.
+ */
 interface Extra<T, E extends Env = any, P extends string = any, I extends Input = {}> {
     /**
      * The context of the request. This is the same as the context of the Hono app.
@@ -57,12 +67,12 @@ export function makeGraphQLWsMiddleware<
 
     const { upgradeWebSocket } = options;
 
-    const server = makeServer<P, Extra<T, HE, HP, I> & Partial<E>>(options);
+    const server = makeServer<P, Extra<T, HE, HP, I> & Partial<E>>(options); // Make a graphql-ws server
 
-    const clients = new WeakMap<T, Client>();
+    const clients = new WeakMap<T, Client>(); // WeakMap to store the clients (the WebSocket connections)
 
     return createMiddleware<HE, HP, I>(async (c, next) => {
-        if (c.req.header('upgrade') !== 'websocket') {
+        if (c.req.header('upgrade') !== 'websocket') { // Check if the request is a WebSocket upgrade request, otherwise continue
             return next();
         }
 

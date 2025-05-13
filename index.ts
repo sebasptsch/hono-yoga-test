@@ -1,8 +1,7 @@
 import { createSchema, createYoga } from "graphql-yoga";
-import { Hono, type Context, type Env, type Input } from "hono";
+import { Hono, type Context } from "hono";
 import { createBunWebSocket } from "hono/bun";
 import { cors } from "hono/cors";
-import { createMiddleware } from "hono/factory";
 import { setTimeout as setTimeout$ } from 'node:timers/promises'
 import type { ServerWebSocket } from "bun";
 import { makeGraphQLWsMiddleware } from "./honoGraphqlWs";
