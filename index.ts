@@ -5,6 +5,8 @@ import { cors } from "hono/cors";
 import { setTimeout as setTimeout$ } from 'node:timers/promises'
 import type { ServerWebSocket } from "bun";
 import { makeGraphQLWsMiddleware } from "./honoGraphqlWs";
+import { graphql } from "graphql";
+import gql from "graphql-tag";
 
 
 const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>()
@@ -15,7 +17,7 @@ const app = new Hono().use("*", cors({
 }));
 
 const schema = createSchema<{ c: Context }>({
-    typeDefs: /* GraphQL */ `
+    typeDefs: gql`
         type Query {
             hello(header: String!): String
         }
